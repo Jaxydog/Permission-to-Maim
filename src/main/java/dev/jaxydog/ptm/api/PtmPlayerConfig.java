@@ -23,7 +23,7 @@ import dev.jaxydog.ptm.PermissionToMaim;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -70,11 +70,11 @@ public record PtmPlayerConfig(int bitSet, boolean hideFloatingArmor) {
         return new PtmPlayerConfig(bitSet, hideFloatingArmor);
     }
 
-    public static @NotNull PtmPlayerConfig get(final @NotNull PlayerEntity playerEntity) {
+    public static @NotNull PtmPlayerConfig get(final @NotNull PlayerLikeEntity playerEntity) {
         return playerEntity.getAttachedOrCreate(PtmPlayerConfig.ATTACHMENT_TYPE);
     }
 
-    public static void set(final @NotNull PlayerEntity playerEntity, final @NotNull PtmPlayerConfig config) {
+    public static void set(final @NotNull PlayerLikeEntity playerEntity, final @NotNull PtmPlayerConfig config) {
         playerEntity.setAttached(PtmPlayerConfig.ATTACHMENT_TYPE, config);
     }
 
