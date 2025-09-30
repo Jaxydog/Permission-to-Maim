@@ -1,0 +1,24 @@
+{
+    "package": "dev.jaxydog.ptm.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "required": true,
+
+    "mixins": [ ],
+    "client": [
+        "client.ArmorFeatureRendererMixin",
+        "client.ClientPlayNetworkHandlerMixin",
+        "client.GameOptionsMixin",
+        "client.PlayerEntityModelMixin",
+        "client.PlayerEntityRendererMixin",
+        "client.PlayerEntityRenderStateMixin",
+        "client.SkinOptionsScreenMixin"
+    ],
+    "server": [ ],
+
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "overwrites": {
+        "requireAnnotations": true
+    }
+}

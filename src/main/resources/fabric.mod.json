@@ -1,0 +1,38 @@
+{
+    "schemaVersion": 1,
+
+    "id": "ptm",
+    "version": "${version}",
+    "name": "Permission to Maim",
+    "description": "Adds toggles for body parts to the game's options",
+    "authors": [ "Jaxydog" ],
+    "contributors": [ ],
+    "license": "AGPL-3.0-or-later",
+    "icon": "assets/ptm/icon.png",
+
+    "contact": {
+        "sources": "https://github.com/Jaxydog/PermissionToMaim",
+        "issues": "https://github.com/Jaxydog/PermissionToMaim/issues"
+    },
+
+    "environment": "*",
+    "accessWidener": "ptm.accesswidener",
+    "mixins": [ "ptm.mixins.json" ],
+    "entrypoints": {
+        "main": [ "dev.jaxydog.ptm.PermissionToMaim" ]
+    },
+    "custom": {
+        "loom:injected_interfaces": {
+            "net/minecraft/class_315": [ "dev/jaxydog/ptm/inject/client/PtmGameOptions" ],
+            "net/minecraft/class_10055": [ "dev/jaxydog/ptm/inject/client/PtmPlayerEntityRenderState" ]
+        }
+    },
+
+    "depends": {
+        "fabricloader": ">=0.17.2",
+        "minecraft": "~1.21.8",
+        "java": ">=21",
+        "fabric-data-attachment-api-v1": "*",
+        "fabric-networking-api-v1": "*"
+    }
+}

@@ -1,0 +1,66 @@
+package dev.jaxydog.ptm.api;
+
+import dev.jaxydog.ptm.PermissionToMaim;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.EnumSet;
+import java.util.Set;
+
+@SuppressWarnings("UnstableApiUsage")
+public record PtmPlayerConfig(int bitSet, boolean hideFloatingArmor) {
+
+    public static final PacketCodec<PacketByteBuf, PtmPlayerConfig> PACKET_CODEC = PacketCodec.tuple(
+        PacketCodecs.INTEGER,
+        PtmPlayerConfig::bitSet,
+        PacketCodecs.BOOLEAN,
+        PtmPlayerConfig::hideFloatingArmor,
+        PtmPlayerConfig::new
+    );
+
+    public static final AttachmentType<PtmPlayerConfig> ATTACHMENT_TYPE = AttachmentRegistry.create(
+        Identifier.of(PermissionToMaim.MOD_ID, "player_config"),
+        builder -> builder.initializer(PtmPlayerConfig::createDefault).copyOnDeath().syncWith(
+            PtmPlayerConfig.PACKET_CODEC,
+            AttachmentSyncPredicate.all()
+        )
+    );
+
+    public static @NotNull PtmPlayerConfig createDefault() {
+        return PtmPlayerConfig.fromEnabledPartSet(EnumSet.allOf(PtmModelPart.class), true);
+    }
+
+    public static @NotNull PtmPlayerConfig fromEnabledPartSet(
+        final @NotNull Set<PtmModelPart> enabledParts,
+        final boolean hideFloatingArmor
+    )
+    {
+        int bitSet = 0;
+
+        for (final @NotNull PtmModelPart modelPart : enabledParts) {
+            bitSet |= modelPart.getBitFlag();
+        }
+
+        return new PtmPlayerConfig(bitSet, hideFloatingArmor);
+    }
+
+    public static @NotNull PtmPlayerConfig get(final @NotNull PlayerEntity playerEntity) {
+        return playerEntity.getAttachedOrCreate(PtmPlayerConfig.ATTACHMENT_TYPE);
+    }
+
+    public static void set(final @NotNull PlayerEntity playerEntity, final @NotNull PtmPlayerConfig config) {
+        playerEntity.setAttached(PtmPlayerConfig.ATTACHMENT_TYPE, config);
+    }
+
+    public boolean isEnabled(final @NotNull PtmModelPart modelPart) {
+        return (this.bitSet & modelPart.getBitFlag()) == modelPart.getBitFlag();
+    }
+
+}
