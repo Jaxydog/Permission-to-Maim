@@ -11,8 +11,8 @@
     "icon": "assets/ptm/icon.png",
 
     "contact": {
-        "sources": "https://github.com/Jaxydog/PermissionToMaim",
-        "issues": "https://github.com/Jaxydog/PermissionToMaim/issues"
+        "sources": "https://github.com/Jaxydog/Permission-To-Maim",
+        "issues": "https://github.com/Jaxydog/Permission-To-Maim/issues"
     },
 
     "environment": "*",
