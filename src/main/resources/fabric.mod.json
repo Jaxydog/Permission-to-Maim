@@ -4,7 +4,7 @@
     "id": "ptm",
     "version": "${version}",
     "name": "Permission to Maim",
-    "description": "Adds toggles for body parts to the game's options",
+    "description": "A small mod that adds the option to configure the visibility of body parts",
     "authors": [ "Jaxydog" ],
     "contributors": [ ],
     "license": "AGPL-3.0-or-later",
