@@ -19,7 +19,9 @@
 
 package dev.jaxydog.ptm.mixin.client;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.jaxydog.ptm.api.PtmPlayerConfig;
+import dev.jaxydog.ptm.inject.client.PtmPlayerEntityModel;
 import dev.jaxydog.ptm.inject.client.PtmPlayerEntityRenderState;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -49,6 +51,13 @@ public abstract class PlayerEntityRendererMixin<AvatarLikeEntity extends PlayerL
     )
     {
         super(ctx, model, shadowRadius);
+    }
+
+    @ModifyReturnValue(method = "method_72996", at = @At("RETURN"))
+    private static @NotNull PlayerEntityModel new_markArmorModels(final PlayerEntityModel original) {
+        ((PtmPlayerEntityModel) original).ptm$setArmorModel(true);
+
+        return original;
     }
 
     @SuppressWarnings("RedundantCast")

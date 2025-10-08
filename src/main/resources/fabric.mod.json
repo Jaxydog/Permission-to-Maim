@@ -24,6 +24,7 @@
     "custom": {
         "loom:injected_interfaces": {
             "net/minecraft/class_315": [ "dev/jaxydog/ptm/inject/client/PtmGameOptions" ],
+            "net/minecraft/class_591": [ "dev/jaxydog/ptm/inject/client/PtmPlayerEntityModel" ],
             "net/minecraft/class_10055": [ "dev/jaxydog/ptm/inject/client/PtmPlayerEntityRenderState" ]
         }
     },

@@ -23,6 +23,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.jaxydog.ptm.api.PtmModelPart;
+import dev.jaxydog.ptm.api.PtmPlayerConfig;
+import dev.jaxydog.ptm.inject.client.PtmPlayerEntityModel;
 import dev.jaxydog.ptm.inject.client.PtmPlayerEntityRenderState;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -41,10 +43,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerEntityModel.class)
 public abstract class PlayerEntityModelMixin
     extends BipedEntityModel<PlayerEntityRenderState>
+    implements PtmPlayerEntityModel
 {
+
+    @Unique
+    private boolean isArmorModel = false;
 
     public PlayerEntityModelMixin(final @NotNull ModelPart modelPart) {
         super(modelPart);
+    }
+
+    @Override
+    public boolean ptm$isArmorModel() {
+        return this.isArmorModel;
+    }
+
+    @Override
+    public void ptm$setArmorModel(final boolean isArmorModel) {
+        this.isArmorModel = isArmorModel;
     }
 
     @SuppressWarnings("RedundantCast")
@@ -54,7 +70,12 @@ public abstract class PlayerEntityModelMixin
         final @NotNull PtmModelPart modelPart
     )
     {
-        return ((PtmPlayerEntityRenderState) renderState).ptm$getPtmPlayerConfig().isEnabled(modelPart);
+        final @NotNull PtmPlayerEntityRenderState ptmState = (PtmPlayerEntityRenderState) renderState;
+        final @NotNull PtmPlayerConfig ptmConfig = ptmState.ptm$getPtmPlayerConfig();
+
+        return this.ptm$isArmorModel()
+            ? !ptmConfig.hideFloatingArmor() || ptmConfig.isEnabled(modelPart)
+            : ptmConfig.isEnabled(modelPart);
     }
 
     @Inject(
@@ -67,7 +88,9 @@ public abstract class PlayerEntityModelMixin
         final @Local boolean notInSpectator
     )
     {
-        this.head.visible = (!notInSpectator) || this.isPartVisible(renderState, PtmModelPart.HEAD);
+        this.head.visible = this.ptm$isArmorModel()
+            ? notInSpectator && this.isPartVisible(renderState, PtmModelPart.HEAD)
+            : !notInSpectator || this.isPartVisible(renderState, PtmModelPart.HEAD);
     }
 
     @WrapOperation(
