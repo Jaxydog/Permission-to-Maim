@@ -73,6 +73,8 @@ public abstract class PlayerEntityModelMixin
         final @NotNull PtmPlayerEntityRenderState ptmState = (PtmPlayerEntityRenderState) renderState;
         final @NotNull PtmPlayerConfig ptmConfig = ptmState.ptm$getPtmPlayerConfig();
 
+        if (!ptmConfig.modEnabled()) return true;
+
         return this.ptm$isArmorModel()
             ? !ptmConfig.hideFloatingArmor() || ptmConfig.isEnabled(modelPart)
             : ptmConfig.isEnabled(modelPart);

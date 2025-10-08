@@ -52,13 +52,33 @@ public abstract class GameOptionsMixin
     private final Set<PtmModelPart> enabledPtmModelParts = EnumSet.allOf(PtmModelPart.class);
     @Unique
     private AtomicBoolean hideFloatingArmor = new AtomicBoolean(true);
+    @Unique
+    private AtomicBoolean modEnabled = new AtomicBoolean(true);
 
     @Shadow
     protected MinecraftClient client;
 
     @Override
+    public boolean ptm$isModEnabled() {
+        if (Objects.isNull(this.modEnabled)) {
+            this.modEnabled = new AtomicBoolean(true);
+        }
+
+        return this.modEnabled.getPlain();
+    }
+
+    @Override
+    public void ptm$setModEnabled(final boolean enabled) {
+        if (Objects.nonNull(this.modEnabled)) {
+            this.modEnabled.setPlain(enabled);
+        } else {
+            this.modEnabled = new AtomicBoolean(enabled);
+        }
+    }
+
+    @Override
     public boolean ptm$isFloatingArmorHidden() {
-        if (this.hideFloatingArmor == null) {
+        if (Objects.isNull(this.hideFloatingArmor)) {
             this.hideFloatingArmor = new AtomicBoolean(true);
         }
 
@@ -67,7 +87,11 @@ public abstract class GameOptionsMixin
 
     @Override
     public void ptm$setFloatingArmorHidden(final boolean hidden) {
-        this.hideFloatingArmor.setPlain(hidden);
+        if (Objects.nonNull(this.hideFloatingArmor)) {
+            this.hideFloatingArmor.setPlain(hidden);
+        } else {
+            this.hideFloatingArmor = new AtomicBoolean(hidden);
+        }
     }
 
     @Override
@@ -77,7 +101,11 @@ public abstract class GameOptionsMixin
 
     @Override
     public @NotNull PtmPlayerConfig ptm$getPlayerConfig() {
-        return PtmPlayerConfig.fromEnabledPartSet(this.enabledPtmModelParts, this.ptm$isFloatingArmorHidden());
+        return PtmPlayerConfig.fromEnabledPartSet(
+            this.enabledPtmModelParts,
+            this.ptm$isFloatingArmorHidden(),
+            this.ptm$isModEnabled()
+        );
     }
 
     @Override
@@ -95,6 +123,15 @@ public abstract class GameOptionsMixin
         final @NotNull CallbackInfo ci
     )
     {
+        final boolean savedModEnabled = visitor.visitBoolean(
+            "%s.modEnabled".formatted(PermissionToMaim.MOD_ID),
+            this.ptm$isModEnabled()
+        );
+
+        if (this.ptm$isModEnabled() != savedModEnabled) {
+            this.ptm$setModEnabled(savedModEnabled);
+        }
+
         final boolean savedHideFloatingArmor = visitor.visitBoolean(
             "%s.hideFloatingArmor".formatted(PermissionToMaim.MOD_ID),
             this.ptm$isFloatingArmorHidden()

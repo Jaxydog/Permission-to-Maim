@@ -111,6 +111,11 @@ public abstract class SkinOptionsScreenMixin
             (button, hidden) -> ptmGameOptions.ptm$setFloatingArmorHidden(hidden)
         ));
 
+        widgetList.add(CyclingButtonWidget.onOffBuilder(ptmGameOptions.ptm$isModEnabled()).build(
+            Text.translatable("options.ptm.modEnabled"),
+            (button, enabled) -> ptmGameOptions.ptm$setModEnabled(enabled)
+        ));
+
         Objects.requireNonNull(this.body).addAll(widgetList);
     }
 

@@ -36,6 +36,10 @@ public interface PtmGameOptions {
 
     void ptm$setModelPartEnabled(final @NotNull PtmModelPart modelPart, final boolean enabled);
 
+    boolean ptm$isModEnabled();
+
+    void ptm$setModEnabled(final boolean enabled);
+
     @NotNull PtmPlayerConfig ptm$getPlayerConfig();
 
 }

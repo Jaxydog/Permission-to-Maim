@@ -34,13 +34,15 @@ import java.util.EnumSet;
 import java.util.Set;
 
 @SuppressWarnings("UnstableApiUsage")
-public record PtmPlayerConfig(int bitSet, boolean hideFloatingArmor) {
+public record PtmPlayerConfig(int bitSet, boolean hideFloatingArmor, boolean modEnabled) {
 
     public static final PacketCodec<PacketByteBuf, PtmPlayerConfig> PACKET_CODEC = PacketCodec.tuple(
         PacketCodecs.INTEGER,
         PtmPlayerConfig::bitSet,
         PacketCodecs.BOOLEAN,
         PtmPlayerConfig::hideFloatingArmor,
+        PacketCodecs.BOOLEAN,
+        PtmPlayerConfig::modEnabled,
         PtmPlayerConfig::new
     );
 
@@ -53,12 +55,13 @@ public record PtmPlayerConfig(int bitSet, boolean hideFloatingArmor) {
     );
 
     public static @NotNull PtmPlayerConfig createDefault() {
-        return PtmPlayerConfig.fromEnabledPartSet(EnumSet.allOf(PtmModelPart.class), true);
+        return PtmPlayerConfig.fromEnabledPartSet(EnumSet.allOf(PtmModelPart.class), true, true);
     }
 
     public static @NotNull PtmPlayerConfig fromEnabledPartSet(
         final @NotNull Set<PtmModelPart> enabledParts,
-        final boolean hideFloatingArmor
+        final boolean hideFloatingArmor,
+        final boolean modEnabled
     )
     {
         int bitSet = 0;
@@ -67,7 +70,7 @@ public record PtmPlayerConfig(int bitSet, boolean hideFloatingArmor) {
             bitSet |= modelPart.getBitFlag();
         }
 
-        return new PtmPlayerConfig(bitSet, hideFloatingArmor);
+        return new PtmPlayerConfig(bitSet, hideFloatingArmor, modEnabled);
     }
 
     public static @NotNull PtmPlayerConfig get(final @NotNull PlayerLikeEntity playerEntity) {
